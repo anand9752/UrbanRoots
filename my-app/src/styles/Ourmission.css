@@ -1,0 +1,232 @@
+.mission-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mission-content {
+  width: 604px;
+  height: auto; /* Changed from fixed height to auto */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px; /* Increased from 15px to 30px */
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.mission-title {
+  width: 604px;
+  height: 44px;
+  font-family: Inter;
+  font-weight: bold;
+  font-size: 2.5rem;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-transform: capitalize;
+  text-align: center;
+  margin-bottom: 1.5rem; /* Increased from 1rem to 1.5rem */
+}
+
+.mission-subtitle {
+  width: 604px;
+  height: 19px;
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 1.2rem;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: center;
+  text-transform: capitalize;
+  color: #666;
+}
+
+.mission-details-container {
+  width: 1305px;
+  height: auto;
+  min-height: 458px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-top: 30px;
+  position: relative;
+}
+
+/* Add new style for left content wrapper */
+.mission-left-content {
+  flex-basis: 48%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Update mission-details-left to fit within its new parent */
+.mission-details-left {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mission-details-right {
+  flex-basis: 48%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mission-details-right img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
+
+/* Nested mission-details-container */
+.mission-details-container .mission-details-container {
+  width: 100%;
+  height: auto;
+  margin-top: 60px;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.mission-details-container .mission-details-container .mission-details-left,
+.mission-details-container .mission-details-container .mission-details-right {
+  width: 48%;
+  height: auto;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .mission-details-container {
+    flex-direction: column;
+  }
+  
+  .mission-details-left, .mission-details-right {
+    flex-basis: 100%;
+  }
+
+  .mission-details-container .mission-details-container {
+    flex-direction: column;
+  }
+  
+  .mission-details-container .mission-details-container .mission-details-left,
+  .mission-details-container .mission-details-container .mission-details-right {
+    width: 100%;
+  }
+
+  .mission-left-content {
+    flex-basis: 100%;
+  }
+  
+  .mission-details-right {
+    flex-basis: 100%;
+    margin-top: 30px;
+  }
+}
+
+/* Statistics styling */
+.stats-container {
+  margin-top: 80px;
+  background-color: #f8f9fa;
+  border-radius: 15px;
+  padding: 30px;
+  height: auto;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  height: auto;
+  gap: 15px;
+}
+
+.stat-number {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #2e7d32; /* Green color to match garden theme */
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Mission count statistics styling */
+.mission-count {
+  width: 100%;
+  max-width: 407px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 10;
+}
+
+.m-left, .m-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px;
+}
+
+.mission-count .stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2e7d32;
+  line-height: 1;
+}
+
+.mission-count .stat-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Additional responsive adjustments */
+@media (max-width: 768px) {
+  .stat-box {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .stat-number {
+    font-size: 2.8rem;
+  }
+  
+  .stat-label {
+    font-size: 1.1rem;
+  }
+
+  .mission-count {
+    position: relative;
+    width: 100%;
+    left: 0;
+    transform: none;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+}
