@@ -1,5 +1,6 @@
 import React from "react";
 import { Star } from "lucide-react";
+import { useAuth } from "@clerk/clerk-react";
 import photo1 from "../components/OIP.jpg";
 import photo2 from "../components/OIP (1).jpg";
 import photo3 from "../components/amith-1596100358085.jpg";
@@ -11,25 +12,52 @@ const consultants = [
     name: "Dr. Vikash Patel",
     image: photo1,
     review: "Dr. Vikash is an exceptional consultant with 10+ years of experience.",
-    rating: 4.0,  // 4 full stars
+    rating: 4.0, // 4 full stars
   },
   {
     id: 2,
     name: "Dr. Ramesh Patidar",
     image: photo2,
     review: "Dr. Ramesh has helped numerous clients with his deep expertise.",
-    rating: 4.5,  // 4 full stars + 1 half star
+    rating: 4.5, // 4 full stars + 1 half star
   },
   {
     id: 3,
     name: "Dr. Yashwant Singh",
     image: photo3,
     review: "Dr. Yashwant is known for his strategic insights and problem-solving skills.",
-    rating: 4.14,  // 4 full stars + slightly filled 5th star
+    rating: 4.14, // 4 full stars + slightly filled 5th star
   },
 ];
 
-const ConsultantCard = ({ consultant }) => {
+const ConsultantCard = ({ consultant, onBookConsultant }) => {
+  const { isSignedIn, isLoaded } = useAuth();
+
+  const handleBookClick = () => {
+    if (!isLoaded) {
+      // If auth hasn't loaded yet, let the user know
+      alert("Authentication is loading. Please try again in a moment.");
+      return;
+    }
+
+    if (isSignedIn) {
+      try {
+        // Call the onBookConsultant function with safety check
+        if (typeof onBookConsultant === "function") {
+          onBookConsultant(consultant);
+        } else {
+          console.error("onBookConsultant is not a function");
+          alert("Sorry, there was a problem. Please try again later.");
+        }
+      } catch (error) {
+        console.error("Error when booking consultant:", error);
+        alert("Sorry, there was a problem. Please try again later.");
+      }
+    } else {
+      alert("Please sign in to book a consultation");
+    }
+  };
+
   return (
     <div
       style={{
@@ -63,7 +91,7 @@ const ConsultantCard = ({ consultant }) => {
       <p style={{ color: "#555", fontSize: "14px", marginBottom: "12px" }}>
         {consultant.review}
       </p>
-      
+
       {/* Star Ratings with Proper Yellow Filling */}
       <div
         style={{
@@ -95,7 +123,7 @@ const ConsultantCard = ({ consultant }) => {
         })}
       </div>
 
-      {/* Updated button with green color */}
+      {/* Updated button with green color and click handler */}
       <button
         style={{
           backgroundColor: "#34A12E",
@@ -108,6 +136,7 @@ const ConsultantCard = ({ consultant }) => {
         }}
         onMouseOver={(e) => (e.target.style.backgroundColor = "#287E22")}
         onMouseOut={(e) => (e.target.style.backgroundColor = "#34A12E")}
+        onClick={handleBookClick}
       >
         Book Consultant
       </button>
@@ -115,7 +144,14 @@ const ConsultantCard = ({ consultant }) => {
   );
 };
 
-export const ConsultantList = () => {
+export const ConsultantList = ({ onBookConsultant }) => {
+  // Add prop validation
+  if (typeof onBookConsultant !== "function") {
+    console.warn("ConsultantList: onBookConsultant prop is not a function");
+    onBookConsultant = () =>
+      alert("Booking feature is currently unavailable. Please try again later.");
+  }
+
   return (
     <div
       style={{
@@ -145,7 +181,11 @@ export const ConsultantList = () => {
         }}
       >
         {consultants.map((consultant) => (
-          <ConsultantCard key={consultant.id} consultant={consultant} />
+          <ConsultantCard
+            key={consultant.id}
+            consultant={consultant}
+            onBookConsultant={onBookConsultant}
+          />
         ))}
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import backgroundImage from '../assets/green.jpg'; // Adjust the path and filename as needed
 
-export const Hero = () => {
+export const Hero = ({ onFindConsultant }) => {
   const heroStyle = {
     width: '95%',
     height: 'calc(100vh - 60px)', // Adjust height to fit screen minus Navbar height (assuming Navbar height is 60px)
@@ -100,7 +100,11 @@ export const Hero = () => {
   const handleMouseLeave = () => setIsHovered(false);
 
   const handleButtonClick = () => {
-    alert('Find Your Consultant button clicked!');
+    if (typeof onFindConsultant === 'function') {
+      onFindConsultant();
+    } else {
+      alert('Find Your Consultant button clicked!');
+    }
   };
 
   return (

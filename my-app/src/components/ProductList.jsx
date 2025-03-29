@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Star, Heart } from "lucide-react";
+import { useAuth } from "@clerk/clerk-react";
 import photo1 from '../components/1kg-vermi-compost-1.jpg';
 import photo2 from '../components/41N9WvU7bnL.jpg';
 import photo3 from '../components/fertilizer.jpg';
@@ -20,6 +21,125 @@ const products = [
 
 const ProductCard = ({ product }) => {
   const [liked, setLiked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { isSignedIn, isLoaded } = useAuth();
+  const [razorpayLoaded, setRazorpayLoaded] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadRazorpayScript = () => {
+      setError(null);
+      
+      if (window.Razorpay) {
+        console.log('Razorpay already available for products');
+        setRazorpayLoaded(true);
+        return;
+      }
+
+      try {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        script.defer = true;
+        
+        script.onload = () => {
+          console.log('Razorpay script loaded successfully for products');
+          if (window.Razorpay) {
+            setRazorpayLoaded(true);
+          } else {
+            setError("Payment system failed to initialize properly");
+          }
+        };
+        
+        script.onerror = () => {
+          console.error('Failed to load Razorpay script for products');
+          setError('Failed to load payment gateway. Please check your internet connection and refresh.');
+        };
+        
+        document.body.appendChild(script);
+      } catch (err) {
+        console.error("Error loading Razorpay script:", err);
+        setError("Failed to initialize payment system");
+      }
+    };
+
+    loadRazorpayScript();
+  }, []);
+
+  const getPriceValue = (priceString) => {
+    return parseInt(priceString.replace(/[^\d]/g, ''));
+  };
+
+  const handleBuyNow = () => {
+    if (!isLoaded) {
+      alert("Authentication is loading. Please try again in a moment.");
+      return;
+    }
+
+    if (!isSignedIn) {
+      alert("Please sign in to make a purchase.");
+      return;
+    }
+
+    if (!razorpayLoaded) {
+      alert('Payment gateway is still loading. Please try again in a moment.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const priceValue = getPriceValue(product.price);
+      
+      const options = {
+        key: "rzp_test_0yx0AGbEbJaWtH",
+        amount: priceValue * 100,
+        currency: "INR",
+        name: "Urban Roots",
+        description: `Payment for ${product.name}`,
+        image: "https://via.placeholder.com/150",
+        handler: function(response) {
+          console.log("Payment success:", response);
+          alert(`Payment Successful! Your order for ${product.name} has been placed. Payment ID: ${response.razorpay_payment_id}`);
+          setIsLoading(false);
+        },
+        prefill: {
+          name: "Urban Roots Customer",
+          email: "",
+          contact: ""
+        },
+        notes: {
+          productId: product.id,
+          productName: product.name,
+          price: product.price,
+          paymentType: "Product Purchase"
+        },
+        theme: {
+          color: "#34A12E"
+        },
+        modal: {
+          ondismiss: function() {
+            setIsLoading(false);
+          }
+        }
+      };
+
+      const razorpay = new window.Razorpay(options);
+      
+      razorpay.on('payment.failed', function(response) {
+        console.error("Payment failed:", response.error);
+        setError(`Payment failed: ${response.error.description}`);
+        setIsLoading(false);
+      });
+      
+      razorpay.open();
+    } catch (error) {
+      console.error('Payment initialization error:', error);
+      setError(`Unable to initialize payment: ${error.message}`);
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div style={{
@@ -38,7 +158,6 @@ const ProductCard = ({ product }) => {
       flexShrink: 0,
       position: "relative",
     }}>
-      {/* Heart Icon */}
       <Heart
         style={{
           position: "absolute",
@@ -54,12 +173,10 @@ const ProductCard = ({ product }) => {
         onClick={() => setLiked(!liked)}
       />
 
-      {/* Product Image */}
       <div style={{ width: "180px", height: "180px", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <img src={product.image} alt={product.name} style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: "8px" }} />
       </div>
 
-      {/* Star Rating */}
       <div style={{ display: "flex", justifyContent: "center", gap: "2px", marginBottom: "5px" }}>
         {[...Array(5)].map((_, index) => {
           const isHalfStar = product.rating - index > 0 && product.rating - index < 1;
@@ -71,29 +188,52 @@ const ProductCard = ({ product }) => {
         })}
       </div>
 
-      {/* Product Name */}
       <h3 style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "5px" }}>
         {product.name}
       </h3>
 
-      {/* Price */}
       <div style={{ textAlign: "center", marginBottom: "8px" }}>
         <span style={{ color: "red", fontSize: "18px", fontWeight: "bold" }}>{product.price}</span>
       </div>
 
-      {/* Buy Button */}
-      <button style={{
-        backgroundColor: "#34A12E",
-        color: "white",
-        fontSize: "16px",
-        padding: "8px 16px",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-        transition: "background 0.3s",
-      }}>
-        Buy Now
+      <button 
+        style={{
+          backgroundColor: isLoading ? "#ccc" : "#34A12E",
+          color: "white",
+          fontSize: "16px",
+          padding: "8px 16px",
+          border: "none",
+          borderRadius: "5px",
+          cursor: isLoading ? "not-allowed" : "pointer",
+          transition: "background 0.3s",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+        }}
+        onClick={handleBuyNow}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <>
+            <span className="loading-spinner" style={{ marginRight: "8px" }}></span>
+            Processing...
+          </>
+        ) : "Buy Now"}
       </button>
+
+      {error && (
+        <div style={{
+          color: "red",
+          fontSize: "12px",
+          marginTop: "5px",
+          position: "absolute",
+          bottom: "5px",
+          width: "90%"
+        }}>
+          {error}
+        </div>
+      )}
     </div>
   );
 };
@@ -102,12 +242,13 @@ export const ProductList = () => {
   const scrollRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   const [scrolling, setScrolling] = useState(true);
+  const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
   useEffect(() => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
 
-    const speed = 2; // Increased speed
+    const speed = 2;
 
     const scroll = () => {
       if (!isHovered && scrolling) {
@@ -118,9 +259,43 @@ export const ProductList = () => {
       }
     };
 
-    const interval = setInterval(scroll, 20); // Faster interval
+    const interval = setInterval(scroll, 20);
     return () => clearInterval(interval);
   }, [isHovered, scrolling]);
+
+  useEffect(() => {
+    const loadRazorpayScript = () => {
+      if (window.Razorpay) {
+        console.log('Razorpay already available');
+        setRazorpayLoaded(true);
+        return;
+      }
+
+      try {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        script.defer = true;
+        
+        script.onload = () => {
+          console.log('Razorpay script loaded successfully');
+          if (window.Razorpay) {
+            setRazorpayLoaded(true);
+          }
+        };
+        
+        script.onerror = () => {
+          console.error('Failed to load Razorpay script');
+        };
+        
+        document.body.appendChild(script);
+      } catch (err) {
+        console.error("Error loading Razorpay script:", err);
+      }
+    };
+
+    loadRazorpayScript();
+  }, []);
 
   return (
     <div style={{
@@ -134,7 +309,6 @@ export const ProductList = () => {
     }}>
       <h2 style={{ fontSize: "26px", fontWeight: "bold", textAlign: "center", marginBottom: "24px" }}>Organic Farming Raw Materials</h2>
 
-      {/* Horizontal Scroll Container */}
       <div
         ref={scrollRef}
         style={{
@@ -154,6 +328,23 @@ export const ProductList = () => {
           <ProductCard key={index} product={product} />
         ))}
       </div>
+
+      <style>
+        {`
+          .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+          }
+          
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        `}
+      </style>
     </div>
   );
 };
