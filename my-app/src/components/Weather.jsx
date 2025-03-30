@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import '../styles/Weather.css';
 
+// Add a constant for the backend URL and log it for debugging
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://urban-roots-backend.vercel.app';
+console.log("Backend URL being used:", BACKEND_URL);
+
 export function Weather() {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -15,22 +19,34 @@ export function Weather() {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(
-        `http://localhost:5000/api/weather?lat=${lat}&lon=${lon}`
-      );
+      // Log the full API request URL for debugging
+      const requestUrl = `${BACKEND_URL}/api/weather?lat=${lat}&lon=${lon}`;
+      console.log("Fetching weather data from:", requestUrl);
+      
+      // Add more detailed error handling and timeouts
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
+      
+      const response = await fetch(requestUrl, { 
+        signal: controller.signal 
+      });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
-        throw new Error('Weather data fetch failed');
+        const errorText = await response.text();
+        console.error("Error response:", response.status, errorText);
+        throw new Error(`Weather API error (${response.status}): ${errorText}`);
       }
       
       const data = await response.json();
       setWeatherData(data);
       setLoading(false);
       
-      // Try to get a readable location name for display
+      // Update the reverse geocoding API call with similar error handling
       try {
         const locationResponse = await fetch(
-          `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=73d794ce3aeac27b680921cffce4445c`
+          `${BACKEND_URL}/api/reverse-geocode?lat=${lat}&lon=${lon}`
         );
         if (locationResponse.ok) {
           const locationData = await locationResponse.json();
@@ -46,7 +62,16 @@ export function Weather() {
       
     } catch (err) {
       console.error('Error fetching weather:', err);
-      setError('Failed to load weather data. Please try again later.');
+      
+      // More specific error message based on error type
+      if (err.name === 'AbortError') {
+        setError('Request timed out. The server might be down or your connection is slow.');
+      } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+        setError(`Network error. Please check your connection and verify the backend URL (${BACKEND_URL}) is correct.`);
+      } else {
+        setError(`Failed to load weather data: ${err.message}`);
+      }
+      
       setLoading(false);
     }
   };
@@ -56,13 +81,22 @@ export function Weather() {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(
-        `https://urban-roots-backend.vercel.app/api/geocode?city=${encodeURIComponent(city)}`
-      );
+      const requestUrl = `${BACKEND_URL}/api/geocode?city=${encodeURIComponent(city)}`;
+      console.log("Fetching city weather from:", requestUrl);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      
+      const response = await fetch(requestUrl, { 
+        signal: controller.signal 
+      });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'City weather data fetch failed');
+        const errorText = await response.text();
+        console.error("Error response:", response.status, errorText);
+        throw new Error(`API error (${response.status}): ${errorText}`);
       }
       
       const data = await response.json();
@@ -71,7 +105,15 @@ export function Weather() {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching city weather:', err);
-      setError(err.message || 'Failed to load weather data for this city. Please check the spelling and try again.');
+      
+      if (err.name === 'AbortError') {
+        setError('Request timed out. The server might be down or your connection is slow.');
+      } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+        setError(`Network error. Please check your connection and verify the backend URL (${BACKEND_URL}) is correct.`);
+      } else {
+        setError(`Failed to load weather data: ${err.message}`);
+      }
+      
       setLoading(false);
     }
   };
