@@ -1,22 +1,22 @@
 import React from "react";
 import { Star } from "lucide-react";
-import photo1 from '../components/cr1.jpg';
-import photo2 from '../components/happy-latin-businesswoman-standing-with-arms-crossed-against-isolated-background_662251-639.avif';
-import photo3 from '../components/OIP (13).jpg';
+import photo1 from '../components/sunita.avif';
+import photo2 from '../components/c1.jpg';
+import photo3 from '../components/c3.jpg';
 
 // Sample customer reviews data
 const reviews = [
   {
     id: 1,
     name: "Sunita Williams",
-    image: photo2,
+    image: photo1,
     review: "I've always wanted to start organic farming on my terrace, but had no idea where to begin. This platform connected me with an expert who guided me on soil, seeds, and setup. Highly recommended!",
     rating: 4.5,
   },
   {
     id: 2,
     name: "Ajay Saxena",
-    image: photo1,
+    image: photo2,
     review: "This site has everything – expert guidance, organic products, and even a blog for learning. The checkout process was smooth. The UI is clean and intuitive!",
     rating: 4,
   },

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export const ConsultationPage = ({ consultant, onBack }) => {
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [isPaid, setIsPaid] = useState(false);
@@ -157,10 +159,18 @@ export const ConsultationPage = ({ consultant, onBack }) => {
     }
   };
 
+  const handleBackClick = () => {
+    if (typeof onBack === 'function') {
+      onBack();
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <div style={{ fontFamily: "Arial, sans-serif", padding: "2rem", background: "#f7fafc" }}>
       <button 
-        onClick={onBack}
+        onClick={handleBackClick}
         style={{
           marginBottom: "20px",
           padding: "8px 16px",

@@ -33,6 +33,7 @@ export const TransitionManager = ({ children }) => {
         .transition-container {
           position: relative;
           width: 100%;
+          min-height: 70vh; /* Ensure container has enough height */
           transition: opacity 0.4s ease, transform 0.4s ease;
         }
         

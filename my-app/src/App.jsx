@@ -13,7 +13,7 @@ import { ConsultationPage } from './components/ConsultationPage.jsx'
 import { PaymentPage } from './components/PaymentPage.jsx'
 import { Weather } from './components/Weather.jsx'
 import { useAuth } from '@clerk/clerk-react'
-import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom'
 import { TransitionManager } from './components/TransitionManager.jsx'
 
 // Error boundary component
@@ -121,6 +121,7 @@ function App() {
   const [error, setError] = useState(null);
   const { isLoaded: isAuthLoaded } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
 
   // Handle page transitions
@@ -173,23 +174,25 @@ function App() {
     <div className="app-wrapper">
       <Navbar />
       
-      <div className={`page-container ${isPageTransitioning ? 'transitioning' : ''}`}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/weather" element={<Weather />} />
-          <Route path="/consultation" element={
-            <ConsultationPage 
-              consultant={selectedConsultant} 
-              onBack={() => window.location.href = '/'} 
-            />
-          } />
-          <Route path="/payment" element={
-            <PaymentPage onBack={() => window.location.href = '/'} />
-          } />
-          {/* Catch-all route to redirect to home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
+      <TransitionManager>
+        <div className={`page-container ${isPageTransitioning ? 'transitioning' : ''}`}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/weather" element={<Weather />} />
+            <Route path="/consultation" element={
+              <ConsultationPage 
+                consultant={selectedConsultant} 
+                onBack={() => navigate('/')} 
+              />
+            } />
+            <Route path="/payment" element={
+              <PaymentPage onBack={() => navigate('/')} />
+            } />
+            {/* Catch-all route to redirect to home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </TransitionManager>
       
       <Footer />
       
