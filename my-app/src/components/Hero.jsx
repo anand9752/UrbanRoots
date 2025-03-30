@@ -129,7 +129,8 @@ export const Hero = ({ onFindConsultant }) => {
     if (typeof onFindConsultant === 'function') {
       onFindConsultant();
     } else {
-      alert('Find Your Consultant button clicked!');
+      // Default fallback if handler is not provided
+      window.location.href = '/payment';
     }
   };
 

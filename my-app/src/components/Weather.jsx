@@ -57,7 +57,7 @@ export function Weather() {
       setError(null);
       
       const response = await fetch(
-        `http://localhost:5000/api/geocode?city=${encodeURIComponent(city)}`
+        `https://urban-roots-backend.vercel.app/api/geocode?city=${encodeURIComponent(city)}`
       );
       
       if (!response.ok) {

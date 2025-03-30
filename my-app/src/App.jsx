@@ -13,7 +13,7 @@ import { ConsultationPage } from './components/ConsultationPage.jsx'
 import { PaymentPage } from './components/PaymentPage.jsx'
 import { Weather } from './components/Weather.jsx'
 import { useAuth } from '@clerk/clerk-react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { TransitionManager } from './components/TransitionManager.jsx'
 
 // Error boundary component
@@ -40,40 +40,23 @@ function ErrorFallback({ error }) {
   );
 }
 
-function App() {
-  const [currentPage, setCurrentPage] = useState("home");
-  const [selectedConsultant, setSelectedConsultant] = useState(null);
-  const [error, setError] = useState(null);
-  const { isLoaded: isAuthLoaded } = useAuth();
-  const location = useLocation();
-  const [isPageTransitioning, setIsPageTransitioning] = useState(false);
-
-  // Reset error when page changes and handle page transitions
+// Home component to encapsulate all home sections
+const HomePage = () => {
+  const [activeSection, setActiveSection] = useState("home");
+  
   useEffect(() => {
-    setError(null);
-    
-    // Add page transition effect
-    setIsPageTransitioning(true);
-    document.body.classList.add('page-transition');
-    
-    const timer = setTimeout(() => {
-      document.body.classList.remove('page-transition');
-      setIsPageTransitioning(false);
-    }, 300);
-    
-    return () => {
-      clearTimeout(timer);
-      document.body.classList.remove('page-transition');
-    };
-  }, [currentPage, location.pathname]);
-
-  // Animation trigger for sections as they come into view
-  useEffect(() => {
+    // Animation trigger for sections as they come into view
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add('fade-in');
+            
+            // Update active section for navbar highlight
+            const id = entry.target.id;
+            if (id) {
+              setActiveSection(id);
+            }
           }
         });
       },
@@ -94,37 +77,82 @@ function App() {
         observer.unobserve(section);
       });
     };
-  }, [location.pathname]);
+  }, []);
 
-  const handleBookConsultant = (consultant) => {
-    try {
-      // Add transition effect
-      setIsPageTransitioning(true);
-      document.body.classList.add('page-transition');
+  return (
+    <main className="home-content">
+      <section id="home" className="animate-on-scroll section-container">
+        <Hero onFindConsultant={() => window.location.href = '/payment'} />
+      </section>
       
-      setTimeout(() => {
-        setSelectedConsultant(consultant);
-        setCurrentPage("consultation");
-        document.body.classList.remove('page-transition');
-        setIsPageTransitioning(false);
-      }, 300);
-    } catch (err) {
-      console.error("Error during booking:", err);
-      setError(err);
-    }
-  };
+      <section id="consultants" className="animate-on-scroll section-container">
+        <ConsultantList onBookConsultant={(consultant) => {
+          // Store selected consultant in sessionStorage before navigation
+          sessionStorage.setItem('selectedConsultant', JSON.stringify(consultant));
+          window.location.href = '/consultation';
+        }} />
+      </section>
+      
+      <section id="services" className="animate-on-scroll section-container">
+        <Services />
+      </section>
+      
+      <section id="shop" className="animate-on-scroll section-container">
+        <ProductList />
+      </section>
+      
+      <section id="reviews" className="animate-on-scroll section-container">
+        <CustomerReviews />
+      </section>
+      
+      <section id="about" className="animate-on-scroll section-container">
+        <Ourmission />
+      </section>
+      
+      <section id="contact" className="animate-on-scroll section-container">
+        <ContactUs />
+      </section>
+    </main>
+  );
+};
 
-  const handlePaymentPage = () => {
-    // Add transition effect
+function App() {
+  const [selectedConsultant, setSelectedConsultant] = useState(null);
+  const [error, setError] = useState(null);
+  const { isLoaded: isAuthLoaded } = useAuth();
+  const location = useLocation();
+  const [isPageTransitioning, setIsPageTransitioning] = useState(false);
+
+  // Handle page transitions
+  useEffect(() => {
+    setError(null);
+    
+    // Add page transition effect
     setIsPageTransitioning(true);
     document.body.classList.add('page-transition');
     
-    setTimeout(() => {
-      setCurrentPage("payment");
+    const timer = setTimeout(() => {
       document.body.classList.remove('page-transition');
       setIsPageTransitioning(false);
     }, 300);
-  };
+    
+    return () => {
+      clearTimeout(timer);
+      document.body.classList.remove('page-transition');
+    };
+  }, [location.pathname]);
+
+  // Get consultant data from sessionStorage if available
+  useEffect(() => {
+    try {
+      const savedConsultant = sessionStorage.getItem('selectedConsultant');
+      if (savedConsultant && location.pathname === '/consultation') {
+        setSelectedConsultant(JSON.parse(savedConsultant));
+      }
+    } catch (err) {
+      console.error("Error retrieving consultant data:", err);
+    }
+  }, [location.pathname]);
 
   // If there's an error, show the error boundary
   if (error) {
@@ -147,47 +175,19 @@ function App() {
       
       <div className={`page-container ${isPageTransitioning ? 'transitioning' : ''}`}>
         <Routes>
+          <Route path="/" element={<HomePage />} />
           <Route path="/weather" element={<Weather />} />
-          <Route path="/*" element={
-            currentPage === "consultation" ? (
-              <ConsultationPage 
-                consultant={selectedConsultant} 
-                onBack={() => setCurrentPage("home")} 
-              />
-            ) : currentPage === "payment" ? (
-              <PaymentPage onBack={() => setCurrentPage("home")} />
-            ) : (
-              <main className="home-content">
-                <section id="home" className="animate-on-scroll section-container">
-                  <Hero onFindConsultant={handlePaymentPage} />
-                </section>
-                
-                <section id="consultants" className="animate-on-scroll section-container">
-                  <ConsultantList onBookConsultant={handleBookConsultant} />
-                </section>
-                
-                <section id="services" className="animate-on-scroll section-container">
-                  <Services />
-                </section>
-                
-                <section id="shop" className="animate-on-scroll section-container">
-                  <ProductList />
-                </section>
-                
-                <section id="reviews" className="animate-on-scroll section-container">
-                  <CustomerReviews />
-                </section>
-                
-                <section id="about" className="animate-on-scroll section-container">
-                  <Ourmission />
-                </section>
-                
-                <section id="contact" className="animate-on-scroll section-container">
-                  <ContactUs />
-                </section>
-              </main>
-            )
+          <Route path="/consultation" element={
+            <ConsultationPage 
+              consultant={selectedConsultant} 
+              onBack={() => window.location.href = '/'} 
+            />
           } />
+          <Route path="/payment" element={
+            <PaymentPage onBack={() => window.location.href = '/'} />
+          } />
+          {/* Catch-all route to redirect to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
       

@@ -19,7 +19,7 @@ export const Ourmission = () => {
           <div className='mission-count'>
             <div className='m-left'>
                 <div className="stat-number">5000+</div>
-                <div className="stat-label">Gardens Created</div>
+                <div className="stat-label">UrbanFarm Created</div>
             </div>
             <div className='m-right'>
                 <div className="stat-number">200+</div>

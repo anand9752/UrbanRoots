@@ -42,16 +42,24 @@ export const Navbar = () => {
 
     window.addEventListener('scroll', checkActiveSection);
     
+    // Set active link based on current path
+    if (location.pathname === '/weather') {
+      setActiveLink('weather');
+    } else if (location.pathname === '/') {
+      // On home page, determine by scroll position
+      checkActiveSection();
+    }
+    
     // Cleanup
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('scroll', checkActiveSection);
     };
-  }, []);
+  }, [location.pathname]);
 
   const scrollToSection = (id) => {
     // If we're not on the home page, navigate to home first
-    if (window.location.pathname !== '/' && window.location.pathname !== '') {
+    if (location.pathname !== '/') {
       // Add fade out animation
       document.body.classList.add('page-transition');
       
