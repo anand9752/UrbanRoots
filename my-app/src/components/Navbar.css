@@ -6,8 +6,11 @@
     color: #191919;
     padding: 1rem 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: sticky;
+    position: fixed; /* Changed from sticky to fixed */
     top: 0;
+    left: 0; /* Ensure navbar starts from the left edge */
+    right: 0; /* Ensure navbar extends to the right edge */
+    width: 100%; /* Ensure full width */
     z-index: 1000;
     transition: all 0.3s ease;
 }
@@ -156,6 +159,11 @@
     box-shadow: 0 4px 12px rgba(52, 161, 46, 0.3);
 }
 
+/* Add padding to body to prevent content from being hidden under the navbar */
+body {
+    padding-top: 70px; /* Adjust this value based on your navbar height */
+}
+
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
@@ -168,6 +176,10 @@
         gap: 1rem;
         text-align: center;
         padding-top: 10px;
+    }
+
+    body {
+        padding-top: 130px; /* Increase padding for mobile where navbar gets taller */
     }
 }
 
