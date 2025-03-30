@@ -2,10 +2,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.95);
     color: #191919;
     padding: 1rem 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.navbar-scrolled {
+    background-color: rgba(255, 255, 255, 0.98);
+    padding: 0.7rem 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-left .logo {
@@ -14,6 +24,11 @@
     text-decoration: none;
     display: flex;
     align-items: center;
+    transition: all 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
 }
 
 .logo-image {
@@ -22,18 +37,36 @@
     margin-right: 10px;
     border-radius: 50%;
     border: 2px solid #191919;
+    transition: all 0.3s ease;
+}
+
+.logo:hover .logo-image {
+    transform: rotate(10deg);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .urban {
     color: #34a12e;
     font-weight: bold;
     font-size: 1.8rem;
+    transition: all 0.3s ease;
 }
 
 .roots {
     color: #191919;
     font-weight: bold;
     font-size: 1.8rem;
+    transition: all 0.3s ease;
+}
+
+.logo:hover .urban {
+    color: #2c8a27;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.logo:hover .roots {
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Navigation Links */
@@ -50,12 +83,35 @@
     text-decoration: none;
     font-size: 1rem;
     font-weight: 500;
-    transition: color 0.3s ease-in-out;
+    transition: color 0.3s ease, transform 0.3s ease;
+    position: relative;
+    padding-bottom: 3px;
+    display: inline-block;
+    outline: none; /* Remove outline on focus */
 }
 
-.navbar-center .nav-links a:hover {
+.navbar-center .nav-links a:hover,
+.navbar-center .nav-links a.active {
     color: #34a12e;
-    text-decoration: underline;
+    transform: translateY(-2px);
+}
+
+.navbar-center .nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #34a12e;
+    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* Smoother easing function */
+    opacity: 0.7;
+    border-radius: 1px;
+}
+
+.navbar-center .nav-links a:hover::after,
+.navbar-center .nav-links a.active::after {
+    width: 100%;
 }
 
 .navbar-right {
@@ -72,26 +128,39 @@
     font-weight: bold;
     padding: 0.5rem 1rem;
     border-radius: 20px;
-    transition: background-color 0.3s ease-in-out;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.navbar-right .login {
+    background-color: transparent;
+    border: 1px solid #ddd;
 }
 
 .navbar-right .login:hover {
     background-color: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-right .signup {
     background-color: #34a12e;
     color: #ffffff;
+    border: 1px solid #34a12e;
 }
 
 .navbar-right .signup:hover {
     background-color: #2a8b24;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 161, 46, 0.3);
 }
 
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
         align-items: center;
+        padding: 1rem;
     }
 
     .navbar-center .nav-links {
@@ -102,25 +171,31 @@
     }
 }
 
-/* Add this to the end of your existing Navbar.css file */
+/* Page transition effect */
+.page-transition {
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
 
+/* Enhance user button transitions */
 .user-button-container {
-  transform-origin: center;
-  transition: all 0.3s ease;
+    transform-origin: center;
+    transition: all 0.3s ease;
 }
 
 /* Make the UserButton bigger by scaling its container */
 .user-button-container > * {
-  scale: 1.4;
+    scale: 1.4;
 }
 
 /* Hover animation effect */
 .user-button-container:hover {
-  transform: scale(1.1);
-  filter: brightness(1.05);
+    transform: scale(1.1);
+    filter: brightness(1.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* Click animation effect */
 .user-button-container:active {
-  transform: scale(0.95);
+    transform: scale(0.95);
 }

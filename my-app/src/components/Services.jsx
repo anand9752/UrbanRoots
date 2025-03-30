@@ -1,125 +1,104 @@
 import React from 'react';
-import logo1 from '../assets/Vector.png'; // Replace with actual logo path
-import logo2 from '../assets/landscaping-icon-1.png'; // Replace with actual logo path
-import logo3 from '../assets/Vector2.png'; // Replace with actual logo path
+
 export const Services = () => {
-  const divStyle = {
-    width: '125.84px', // Decreased by 20%
-    height: '39.52px', // Decreased by 20%
-    margin: '20.8px auto', // Decreased by 20%
-    fontFamily: 'Arial, sans-serif',
-    fontWeight: 'bold',
-    fontSize: '28px', // Decreased by 20%
-    lineHeight: '104%', // Decreased by 20%
-    letterSpacing: '0%',
-    textTransform: 'capitalize',
-    color: 'black',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '10.4px', // Decreased by 20%
-    borderRadius: '5.2px', // Decreased by 20%
-  };
-
-  const secondDivStyle = {
-    width: '1183.52px', // Decreased by 20%
-    height: '216.32px', // Decreased by 20%
-    margin: '86.32px auto', // Decreased by 20%
-    fontFamily: 'Arial, sans-serif',
-    fontWeight: 'bold',
-    fontSize: '28px', // Decreased by 20%
-    lineHeight: '104%', // Decreased by 20%
-    letterSpacing: '0%',
-    textTransform: 'capitalize',
-    color: 'black',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '10.4px', // Decreased by 20%
-    borderRadius: '5.2px', // Decreased by 20%
-    gap: '20.8px', // Decreased by 20%
-  };
-
-  const innerDivStyle = {
-    width: '336.96px', // Decreased by 20%
-    height: '216.32px', // Decreased by 20%
-    backgroundColor: 'lightgray',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    padding: '20.8px', // Decreased by 20%
-    borderRadius: '5.2px', // Decreased by 20%
-    transition: 'transform 0.3s ease', // Add smooth transition for scaling
-  };
-
-  const innerDivHoverStyle = {
-    transform: 'scale(1.1)', // Scale up on hover
-  };
-
-  const logoStyle = {
-    width: '52.78px', // Decreased by 20%
-    height: '50.96px', // Decreased by 20%
-    marginBottom: '12.48px', // Decreased by 20%
-  };
-
-  const textStyle = {
-    width: '232.96px', // Decreased by 20%
-    height: '29.12px', // Decreased by 20%
-    fontFamily: 'Arial, sans-serif',
-    fontWeight: 'bold',
-    fontSize: '20.8px', // Decreased by 20%
-    lineHeight: '104%', // Decreased by 20%
-    letterSpacing: '0%',
-    textTransform: 'capitalize',
-    color: '#2B2B2B',
-    marginBottom: '8.32px', // Decreased by 20%
-  };
-
-  const descriptionStyle = {
-    width: '282.88px', // Decreased by 20%
-    height: '53.04px', // Decreased by 20%
-    fontFamily: 'Arial, sans-serif',
-    fontWeight: '400',
-    fontSize: '12.8px', // Decreased by 20%
-    lineHeight: '104%', // Decreased by 20%
-    letterSpacing: '0%',
-    textTransform: 'capitalize',
-    color: '#2B2B2B',
-  };
+  // Services data array
+  const servicesData = [
+    {
+      title: "Organic Farming Consultation",
+      description: "Get expert advice on setting up and maintaining organic farms in urban spaces. Our consultants provide personalized guidance for your specific needs.",
+      icon: "🌱"
+    },
+    {
+      title: "Rooftop Garden Setup",
+      description: "Transform your rooftop into a thriving garden with our professional setup services. We handle everything from design to implementation.",
+      icon: "🏡"
+    },
+    {
+      title: "Hydroponics Solutions",
+      description: "Explore soil-less farming with our advanced hydroponics systems. Perfect for limited spaces and water-efficient farming.",
+      icon: "💧"
+    },
+    {
+      title: "Vertical Farming Installation",
+      description: "Maximize your growing space with vertical farming solutions. Ideal for urban environments with limited horizontal space.",
+      icon: "🏙️"
+    },
+    {
+      title: "Sustainable Farming Workshops",
+      description: "Learn sustainable farming practices through our hands-on workshops. Develop skills to grow your own organic produce.",
+      icon: "🌿"
+    },
+    {
+      title: "Organic Pest Management",
+      description: "Control pests naturally without harmful chemicals. Our experts provide eco-friendly solutions for pest management.",
+      icon: "🐞"
+    }
+  ];
 
   return (
-    <div>
-      <div style={divStyle}>Services</div>
-      <div style={secondDivStyle}>
-        <div
-          style={innerDivStyle}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = innerDivHoverStyle.transform)}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        >
-          <img src={logo1} alt="Logo 1" style={logoStyle} />
-          <div style={textStyle}>Expert Consultation</div>
-          <div style={descriptionStyle}>Get personalized guidance from experienced urban farming consultants.</div>
-        </div>
-        <div
-          style={innerDivStyle}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = innerDivHoverStyle.transform)}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        >
-          <img src={logo2} alt="Logo 2" style={logoStyle} />
-          <div style={textStyle}>Farm Setup</div>
-          <div style={descriptionStyle}>Complete setup services including soil preparation and plant selection.</div>
-        </div>
-        <div
-          style={innerDivStyle}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = innerDivHoverStyle.transform)}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        >
-          <img src={logo3} alt="Logo 3" style={logoStyle} />
-          <div style={textStyle}>Organic Products</div>
-          <div style={descriptionStyle}>High-quality organic seeds, soil, and fertilizers for your garden.</div>
+    <div style={{
+      padding: "4rem 2rem",
+      backgroundColor: "#f9f9f9",
+      width: "100%",
+    }}>
+      <div style={{
+        maxWidth: "1200px",
+        margin: "0 auto",
+      }}>
+        <h2 style={{
+          textAlign: "center",
+          fontSize: "2.5rem",
+          marginBottom: "3rem",
+          color: "#34A12E",
+        }}>Our Services</h2>
+        
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
+          gap: "2rem",
+        }}>
+          {servicesData.map((service, index) => (
+            <div key={index} style={{
+              backgroundColor: "white",
+              borderRadius: "10px",
+              padding: "2rem",
+              boxShadow: "0 5px 15px rgba(0, 0, 0, 0.05)",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              cursor: "pointer",
+            }}
+            className="service-card">
+              <div style={{
+                fontSize: "3rem",
+                marginBottom: "1rem",
+              }}>
+                {service.icon}
+              </div>
+              <h3 style={{
+                fontSize: "1.5rem",
+                marginBottom: "1rem",
+                color: "#333",
+              }}>
+                {service.title}
+              </h3>
+              <p style={{
+                color: "#666",
+                lineHeight: "1.6",
+              }}>
+                {service.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
+
+      <style>{`
+        .service-card:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+      `}</style>
     </div>
   );
 };
+
+export default Services;
