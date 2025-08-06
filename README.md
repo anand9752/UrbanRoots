@@ -1,4 +1,4 @@
-# 🌿 Urban Farming Web App – Greening the Urban Jungle
+# 🌿 Urban Farming Web App – Greening the Urban Jungle 
 
 Imagine stepping onto your balcony or rooftop and harvesting fresh, organic vegetables—grown by **you**! In today’s fast-paced urban life, access to chemical-free, homegrown food often seems impossible. That’s why we created **[Your App Name]** – a web application designed to bring the joy of farming into city life.
 
